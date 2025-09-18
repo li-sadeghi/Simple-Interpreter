@@ -1,0 +1,5 @@
+func add(x:int, y:int): int {
+  return x + y;
+}
+var result:int = add(5, 7);
+print(result);

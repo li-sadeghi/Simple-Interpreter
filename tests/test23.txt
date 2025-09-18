@@ -1,0 +1,4 @@
+var x = "aliiii";
+var arr = [1, 2, 3];
+print(len(x));
+print(len(arr));

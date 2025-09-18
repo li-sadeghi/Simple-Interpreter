@@ -1,0 +1,70 @@
+var firstList: list<int> = [7, 11, 20, 16, 14, 1];
+var secondList: list<string> = ["111", "10000", "10001001", "1011", "1100", "0"];
+
+func power2(n: int): int {
+    var res = 1;
+    while (n > 0) {
+        res = res * 2;
+        n = n - 1;
+    }
+    return res;
+}
+ 
+func binaryStringToDecimal(s: string): int {
+    var stringLength = len(s);
+    var result: int = 0;
+    var index = 0;
+    var power = stringLength - 1;
+
+    while (index < stringLength) {
+        var powerRes = power2(power);
+        var currChar = s[index];
+        if (currChar == "1") {
+            result = result + powerRes;
+        }
+        index = index + 1;
+        power = power - 1;
+    }
+
+    return result;
+
+}
+
+func isIn(searchVar: int, intList: list<int>): bool {
+    var listLength = len(intList);
+    var index = 0;
+    var isInList = false;
+    while (index < listLength) {
+        var currNumber = intList[index];
+        if (currNumber == searchVar) {
+            isInList = true;
+        }
+        index = index + 1;
+    }
+    return isInList;
+}
+
+
+var multEven: int = 1;
+var multOdd: int = 1;
+var i = 0;
+var listLength = len(secondList);
+
+while (i < listLength) {
+    var currString = secondList[i];
+    var currNumber = binaryStringToDecimal(currString);
+    var isInList = isIn(currNumber, firstList);
+    var mod = currNumber % 2;
+    var isEven = (mod == 0);
+    if (isInList){
+        if (isEven) {
+            multEven = multEven * currNumber;
+        } else {
+            multOdd = multOdd * currNumber;
+        }
+    } 
+    i = i + 1;
+}
+
+
+print(multOdd + multEven);

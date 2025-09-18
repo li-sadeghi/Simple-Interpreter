@@ -1,0 +1,9 @@
+func allocMany() : void {
+  var a:int = 1;
+  var b:int = 2;
+  var c:int = 3;
+  var d:int = 4;
+  var e:int = 5;
+  return;
+}
+allocMany();

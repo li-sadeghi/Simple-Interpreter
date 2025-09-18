@@ -1,0 +1,17 @@
+var n: int = -20;
+
+func reverseNumber(n: int): void {
+    if (n < 0) {
+        var msg:string = "you should provide a non-negative number!";
+        print(msg);
+    } else {
+        var reverseNum:int = 0;
+        while (n > 0) {
+            reverseNum = reverseNum * 10 + (n % 10);
+            n = n // 10;
+        }
+        print(reverseNum);
+    }
+}
+
+reverseNumber(n);

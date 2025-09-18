@@ -1,0 +1,8 @@
+var x:int = 7;
+var y:int = 3;
+
+if (x > 5 and y < 5) {
+  print(1);
+} else {
+  print(0);
+}

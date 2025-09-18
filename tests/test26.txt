@@ -1,0 +1,4 @@
+var i = 3;
+var j = 2;
+
+print(i, j);

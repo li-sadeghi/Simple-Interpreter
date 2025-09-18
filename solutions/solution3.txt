@@ -1,0 +1,121 @@
+var game = [
+    ["-", "X", "-", "-", "X", "O"],
+    ["O", "O", "X", "-", "-", "O"],
+    ["-", "-", "X", "X", "-", "O"],
+    ["-", "X", "X", "O", "X", "O"],
+    ["O", "O", "-", "-", "X", "-"],
+    ["-", "-", "-", "-", "-", "-"]
+];
+var xWon: bool = false;
+var oWon: bool = false;
+
+for (var i: int = 0; i < 6; i = i + 1) {
+    for (var j: int = 0; j <= 2; j = j + 1) {
+        var allX: bool = true;
+        var allO: bool = true;
+        for (var k: int = 0; k < 4; k = k + 1) {
+            var t: int = j + k;
+            var cell: string = game[i][t];
+            if (cell != "X") {
+                allX = false;
+            }
+            if (cell != "O") {
+                allO = false;
+            }
+        }
+        if (allX) {
+            xWon = true;
+        }
+        if (allO) {
+            oWon = true;
+        }
+    }
+}
+
+for (var j: int = 0; j < 6; j = j + 1) {
+    for (var i: int = 0; i <= 2; i = i + 1) {
+        var allX: bool = true;
+        var allO: bool = true;
+        for (var k: int = 0; k < 4; k = k + 1) {
+            var t: int = i + k;
+            var row: list[string] = game[t];
+            var cell: string = row[j];
+            if (cell != "X") {
+                allX = false;
+            }
+            if (cell != "O") {
+                allO = false;
+            }
+        }
+        if (allX) {
+            xWon = true;
+        }
+        if (allO) {
+            oWon = true;
+        }
+    }
+}
+
+for (var i: int = 0; i <= 2; i = i + 1) {
+    for (var j: int = 0; j <= 2; j = j + 1) {
+        var allX: bool = true;
+        var allO: bool = true;
+        for (var k: int = 0; k < 4; k = k + 1) {
+            var t: int = (i + k);
+            var p: int = (j + k);
+            var row: list[string] = game[t];
+            var cell: string = row[p];
+            if (cell != "X") {
+                allX = false;
+            }
+            if (cell != "O") {
+                allO = false;
+            }
+        }
+        if (allX) {
+            xWon = true;
+        }
+        if (allO) {
+            oWon = true;
+        }
+    }
+}
+
+for (var i: int = 0; i <= 2; i = i + 1) {
+    for (var j: int = 3; j < 6; j = j + 1) {
+        var allX: bool = true;
+        var allO: bool = true;
+        for (var k: int = 0; k < 4; k = k + 1) {
+            var t: int = i + k;
+            var p: int = j - k;
+            var row: list[string] = game[t];
+            var cell: string = row[p];
+            if (cell != "X") {
+                allX = false;
+            }
+            if (cell != "O") {
+                allO = false;
+            }
+        }
+        if (allX) {
+            xWon = true;
+        }
+        if (allO) {
+            oWon = true;
+        }
+    }
+}
+
+if (xWon) {
+    if (oWon) {
+        print("Somebody Cheated!");
+    } else {
+        print("X wins!");
+    }
+} else {
+    if (oWon) {
+        print("O wins!");
+    } else {
+        print("Draw!");
+    }
+}

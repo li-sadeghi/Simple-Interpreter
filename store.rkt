@@ -1,0 +1,107 @@
+#lang racket
+(require "datatypes.rkt")
+(require (only-in (lib "eopl.ss" "eopl") eopl:error cases))
+
+(define the-store #f)
+(define store-length 0)
+(define free-list '())
+
+(define (initialize-store!)
+  (set! the-store (make-vector 16 #f))
+  (set! store-length 0)
+  (set! free-list '()))
+
+(define (grow-store!)
+  (let* ((old the-store)
+         (oldn (vector-length old))
+         (newn (max 1 (* 2 oldn)))
+         (new (make-vector newn #f)))
+    (for ([i (in-range oldn)])
+      (vector-set! new i (vector-ref old i)))
+    (set! the-store new)))
+
+(define (make-entry val)
+  (cons val #f))
+
+(define (newref val)
+  (let ((idx (if (null? free-list)
+                 store-length
+                 (let ((f (car free-list)))
+                   (set! free-list (cdr free-list))
+                   f))))
+    (when (>= idx (vector-length the-store))
+      (grow-store!))
+    (vector-set! the-store idx (make-entry val))
+    (when (>= idx store-length)
+      (set! store-length (add1 idx)))
+    idx))
+
+(define (report-invalid-reference)
+  (eopl:error 'invalid-reference "\n\tillegal reference to memory!"))
+
+(define (deref ref)
+  (if (or (not (integer? ref)) (< ref 0) (>= ref (vector-length the-store)))
+      (report-invalid-reference)
+      (let ((entry (vector-ref the-store ref)))
+        (if (or (eq? entry 'free) (eq? entry #f))
+            (report-invalid-reference)
+            (car entry)))))
+
+(define (setref! ref val)
+  (if (or (not (integer? ref)) (< ref 0) (>= ref (vector-length the-store)))
+      (report-invalid-reference)
+      (let ((entry (vector-ref the-store ref)))
+        (if (or (eq? entry 'free) (eq? entry #f))
+            (report-invalid-reference)
+            (vector-set! the-store ref (cons val (cdr entry)))))))
+
+(define (store-allocated-count) store-length)
+(define (store-free-count) (length free-list))
+(define (store-capacity) (vector-length the-store))
+(define (get-store-raw) the-store)
+
+(define (mark-expval v)
+  (cases expval v
+    (list-val (vals) (for-each mark-expval vals))
+    (closure-val (params body env) (mark-env env))
+    (thunk-val (thunk memo)
+      (let ((cached (unbox memo)))
+        (when cached (mark-expval cached))))
+    (else #f)))
+
+(define (mark-ref idx)
+  (when (and (integer? idx) (>= idx 0) (< idx (vector-length the-store)))
+    (let ((entry (vector-ref the-store idx)))
+      (when (and entry (not (eq? entry 'free)))
+        (unless (cdr entry)
+          (vector-set! the-store idx (cons (car entry) #t))
+          (mark-expval (car entry)))))))
+
+(define (mark-env env)
+  (cases environment env
+    (empty-environment () #f)
+    (extend-environment (saved-var val saved-env)
+      (when (integer? val) (mark-ref val))
+      (mark-env saved-env))))
+
+(define (reset-marks!)
+  (for ([i (in-range 0 store-length)])
+    (let ((entry (vector-ref the-store i)))
+      (when (and entry (not (eq? entry 'free)))
+        (vector-set! the-store i (cons (car entry) #f))))))
+
+(define (sweep!)
+  (for ([i (in-range 0 store-length)])
+    (let ((entry (vector-ref the-store i)))
+      (when (and entry (not (eq? entry 'free)) (not (cdr entry)))
+        (vector-set! the-store i 'free)
+        (set! free-list (cons i free-list))))))
+
+(define (gc! root-env)
+  (when (and (vector? the-store) (> store-length 0))
+    (reset-marks!)
+    (mark-env root-env)
+    (sweep!)
+    #t))
+
+(provide (all-defined-out))

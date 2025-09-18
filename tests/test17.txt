@@ -1,0 +1,2 @@
+var matrix:list<list<int>> = [[1, 2], [3, 4]];
+print(matrix[1][0]);

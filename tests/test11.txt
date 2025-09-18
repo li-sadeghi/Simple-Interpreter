@@ -1,0 +1,11 @@
+var counter:int = 0;
+
+func inc(): void {
+  counter = counter + 1;
+}
+
+inc();
+inc();
+inc();
+
+print(counter);

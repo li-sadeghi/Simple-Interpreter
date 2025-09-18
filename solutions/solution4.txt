@@ -1,0 +1,178 @@
+var dates = ["20250116", "202211044", "20221222", "20231204"];
+
+var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+
+func stringToInt(str: string) : int {
+    var result: int = 0;
+    var strLength = len(str);
+    var index: int = 0;
+    var power = strLength - 1;
+    
+    while (index < strLength) {
+        var digitChar = str[index];
+        var digit = -1;
+        if (digitChar == "0") {
+            digit = 0;
+        }
+        if (digitChar == "1") {
+            digit = 1;
+        }
+        if (digitChar == "2") {
+            digit = 2;
+        }
+        if (digitChar == "3") {
+            digit = 3;
+        }
+        if (digitChar == "4") {
+            digit = 4;
+        }
+        if (digitChar == "5") {
+            digit = 5;
+        }
+        if (digitChar == "6") {
+            digit = 6;
+        }
+        if (digitChar == "7") {
+            digit = 7;
+        }
+        if (digitChar == "8") {
+            digit = 8;
+        }
+        if (digitChar == "9") {
+            digit = 9;
+        }
+        var tmp = power;
+        var powerRes = digit;
+        while (tmp > 0) {
+            powerRes = powerRes * 10;
+            tmp = tmp - 1;
+        }
+        result = result + powerRes;
+
+        index = index + 1;
+        power = power - 1;
+    }
+    return result;
+}
+
+func isValidDate(date: string): bool {
+    var dateLength = len(date);
+    var day = "DD";
+    var month = "MM";
+    var isValid = true;
+    if (dateLength == 8) {
+        month[0] = date[4];
+        month[1] = date[5];
+        day[0] = date[6];
+        day[1] = date[7];
+        var dayNum = stringToInt(day);
+        var monthNum = stringToInt(month);
+
+        if (dayNum < 1 or dayNum > 31) {
+            isValid = false;
+        }
+        if (monthNum < 1 or monthNum > 12) {
+            isValid = false;
+        }
+    } else {
+        isValid = false;
+    }
+    return isValid;
+}
+
+
+var datesLength = len(dates);
+var i = 0;
+
+while (i < datesLength) {
+    var isValid = isValidDate(dates[i]);
+    if (not isValid) {
+        dates[i] = "";
+    }
+    i = i + 1;
+}
+
+i = 0;
+
+func swapInDates(i: int, j:int): void {
+    var first = dates[i];
+    var second = dates[j];
+    dates[i] = second;
+    dates[j] = first;
+}
+
+func isBiggerInDates(i: int, j: int): int {
+    var first = stringToInt(dates[i]);
+    var second = stringToInt(dates[j]);
+    var isBigger = false;
+    if (first > second) {
+        isBigger = true;
+    }
+    return isBigger;
+}
+
+var j = 0;
+var k = 0;
+
+for (j = 0; j < datesLength; j=j + 1) {
+    k = 0;
+    while(k < datesLength) {
+        if (dates[k] != "" && dates[j] != "") {
+            if (not isBiggerInDates(j,k)) {
+                swapInDates(j,k);
+            }
+        }
+        k = k + 1;
+    }
+}
+
+func convertDateToText(date: string): string {
+    var dateText = "Dec 31 of 2000";
+
+    var year = "YYYY";
+    var month = "MM";
+    var day = "DD";
+    
+    year[0] = date[0];
+    year[1] = date[1];
+    year[2] = date[2];
+    year[3] = date[3];
+    month[0] = date[4];
+    month[1] = date[5];
+    day[0] = date[6];
+    day[1] = date[7];
+    var monthNum = stringToInt(month);
+    var monthText = months[monthNum - 1];
+
+    dateText[0] = monthText[0];
+    dateText[1] = monthText[1];
+    dateText[2] = monthText[2];
+    
+    dateText[4] = day[0];
+    dateText[5] = day[1];
+
+    dateText[10] = year[0];
+    dateText[11] = year[1];
+    dateText[12] = year[2];
+    dateText[13] = year[3];
+
+    return dateText;
+}
+
+i = 0;
+
+while (i < datesLength) {
+    if (dates[i] != "") {
+        var dateText = convertDateToText(dates[i]);
+        dates[i] = dateText;
+    }
+    i = i + 1;
+}
+i = 0;
+while (i < datesLength) {
+    if (dates[i] != "") {
+        print(dates[i]);
+    }
+    i = i + 1;
+}

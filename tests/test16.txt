@@ -1,0 +1,3 @@
+var x: int = 2;
+var a:list<int> = [10, 20, 30];
+print(a[x]);

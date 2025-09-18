@@ -1,0 +1,3 @@
+var x = "true";
+var y = "true";
+print(x == y);

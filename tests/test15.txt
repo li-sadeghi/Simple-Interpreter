@@ -1,0 +1,2 @@
+var greeting:string = "Hello, World!";
+print(greeting);

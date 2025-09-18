@@ -1,0 +1,133 @@
+Program ::= StatementList
+
+StatementList ::= Statement StatementList
+                | lambda
+
+Statement ::= OtherStatement
+             | IfStatement
+
+OtherStatement ::= VariableDeclaration
+                  | FunctionDeclaration
+                  | Assignment
+                  | LoopStatement
+                  | Block
+                  | FunctionCallStmt
+                  | PrintStatement
+                  | ReturnStatement
+                  | BreakStatement
+                  | ContinueStatement
+
+BreakStatement ::= 'break' ';'
+
+ContinueStatement ::= 'continue' ';'
+
+Block ::= '{' StatementList '}'
+
+VariableDeclaration ::= 'var' Identifier ':' Type '=' Expression ';'
+
+Type ::= 'int'
+        | 'float'
+        | 'string'
+        | 'bool'
+        | 'list' '[' Type ']'
+        | 'void'
+        | 'nulltype'
+
+FunctionDeclaration ::= 'func' Identifier '(' ParameterList ')' ':' Type Block
+
+ParameterList ::= ParameterListNonEmpty
+                | lambda
+
+ParameterListNonEmpty ::= Parameter
+                         | Parameter ',' ParameterListNonEmpty
+
+Parameter ::= Identifier ':' Type
+
+Assignment ::= Identifier '=' Expression ';'
+
+IfStatement ::= MatchedIf
+               | UnmatchedIf
+
+MatchedIf ::= 'if' '(' Expression ')' Block 'else' Block
+
+UnmatchedIf ::= 'if' '(' Expression ')' Block
+              | 'if' '(' Expression ')' MatchedIf 'else' UnmatchedIf
+
+LoopStatement ::= WhileLoop
+                | ForLoop
+
+WhileLoop ::= 'while' '(' Expression ')' Block
+
+ForLoop ::= 'for' '(' ForAssignment ';' Expression ';' ForAssignment ')' Block
+
+ForAssignment ::= Identifier '=' Expression
+
+FunctionCallExpr ::= Identifier '(' ArgumentList ')'
+
+FunctionCallStmt ::= FunctionCallExpr ';'
+
+ArgumentList ::= ArgumentListNonEmpty
+               | lambda
+
+ArgumentListNonEmpty ::= Expression
+                        | Expression ',' ArgumentListNonEmpty
+
+PrintStatement ::= 'print' '(' Expression ')' ';'
+
+ReturnStatement ::= 'return' Expression ';'
+                  | 'return' ';' 
+                  | lambda
+
+Expression ::= LogicalExpression
+
+LogicalExpression ::= ComparativeExpression
+                     | LogicalExpression LogicalOperator ComparativeExpression
+                     | 'not' ComparativeExpression
+
+ComparativeExpression ::= ArithmeticExpression
+                         | ArithmeticExpression ComparativeOperator ArithmeticExpression
+
+ArithmeticExpression ::= Term
+                       | ArithmeticExpression AdditiveOperator Term
+
+Term ::= Power
+       | Term MultiplicativeOperator Power
+
+Power ::= Factor
+        | Factor '^' Power
+
+Factor ::= Identifier
+          | Literal
+          | '(' Expression ')'
+          | FunctionCallExpr
+          | UnaryOperator Factor
+          | 'NULL'
+
+Literal ::= IntegerLiteral
+          | FloatLiteral
+          | StringLiteral
+          | ListLiteral
+          | 'true'
+          | 'false'
+
+ListLiteral ::= '[' ExpressionList ']'
+
+ExpressionList ::= ExpressionListNonEmpty
+                 | lambda
+
+ExpressionListNonEmpty ::= Expression
+                          | Expression ',' ExpressionListNonEmpty
+
+ComparativeOperator ::= '<' | '>' | '<=' | '>=' | '==' | '!='
+
+LogicalOperator ::= '&&' | '||' | 'and' | 'or'
+
+AdditiveOperator ::= '+' | '-'
+
+MultiplicativeOperator ::= '*' | '/' | '%' 
+
+UnaryOperator ::= '-' | '!' | 'not'
+
+IntegerLiteral ::= Digit+
+FloatLiteral ::= Digit+ '.' Digit+
+StringLiteral ::= '"' (Character)* '"'
